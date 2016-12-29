@@ -6,51 +6,87 @@ const SPENDING_THRESHOLD = 500;
 
 // Variables declared here, Functions at bottom
 var TotalPrice;
-var AccountBalance;
-var TotalPhoneCost;
-var TotalPurchaseAmount;
+var AccountBalance = 0;
+var TotalPhonePrice;
+var TotalPurchaseAmount = 0;
 var OverTheLimit;
 var OutOfFunds;
-var TotalPhones;
-var TotalAccessories;
+var TotalPhones = 0;
+var TotalAccessoriesPrice;
+var CombinedAccessoriesCost = 0;
+var TotalAccessories = 0;
+var PhoneAndAccessories;
 
+
+//Figure out costs and what have in the bank
 AccountBalance = prompt("Enter your Bank Account Balance");
-//Buy as many phones with accessories as you can
-while (!OutOfFunds) {
-	PurchasePhone();
-	while (!OverTheLimit) { //Add on accessories until cost per phone limit reached
+TotalAccessoriesPrice = CalculateTax(ACCESSORIES_PRICE);
+TotalPhonePrice = CalculateTax(PHONE_PRICE);
+
+//See how many accessories we can afford
+for (PhoneAndAccessories = TotalPhonePrice; PhoneAndAccessories < SPENDING_THRESHOLD;) {
+	PhoneAndAccessories += TotalAccessoriesPrice;
+	CombinedAccessoriesCost += TotalAccessoriesPrice;
+	TotalAccessories++;
+}
+
+// Add on accessories until cost per phone limit reached
+/*	while (!OverTheLimit) { 
 		PurchaseAccessories();
-		if (TotalAccessoriesCost < SPENDING_THRESHOLD) {
-			TotalPurchaseAmount =+ TotalAccessoriesCost;
+		if (TotalPhoneCost + CombinedAccessoriesCost < SPENDING_THRESHOLD) {
+			TotalPurchaseAmount += TotalAccessoriesCost;
+			TotalPurchaseAmount += TotalPhoneCost;
+			CombinedAccessoriesCost += TotalAccessoriesCost;
 			TotalAccessories++;
 		}
 		else {
 			OverTheLimit = 1;
+			CombinedAccessoriesCost = 0;
 			console.log("The total number of accessories per phone is ", TotalAccessories);
 		}	
 	}
+*/
+// See how many phones we can afford with accessories for each
+while (PhoneAndAccessories < AccountBalance) {
+	PhoneAndAccessories += PhoneAndAccessories;
+	TotalPhones++;
+}
+
+//Show the results
+PhoneAndAccessories = PhoneAndAccessories.toFixed(2);
+CombinedAccessoriesCost = CombinedAccessoriesCost.toFixed(2);
+alert("The Total Purchase Amount is $", PhoneAndAccessories);
+alert("The total number of phones purchased is ", TotalPhones);
+console.log("The total number of accessories per phone is ", TotalAccessories);
+console.log("The total cost of the accessories per phone is $", CombinedAccessoriesCost);
+/*
+while (!OutOfFunds) {
+	PurchasePhone();
+	
 	if (TotalPurchaseAmount < AccountBalance) {
-		AccountBalance =- TotalPurchaseAmount;
+		AccountBalance -= TotalPurchaseAmount;
 		TotalPurchaseAmount = 0;
 		TotalPhones++;
 	}
 	else {
-		OutOfFunds = $true;
-		alert("The Total Purchase Amount is ", TotalPurchaseAmount, "The total number of phones purchased is ", TotalPhones);
+		OutOfFunds = 1;
+		TotalPurchaseAmount = TotalPurchaseAmount.toFixed(2);
+		alert("The Total Purchase Amount is $", TotalPurchaseAmount);
+		alert("The total number of phones purchased is ", TotalPhones);
 	}	
 }
+*/
 
 // Functions Declarations
 function PurchasePhone() {
-	TotalPurchaseAmount =+ CalculateTotal(PHONE_PRICE);
-	
+	TotalPhoneCost = CalculateTax(PHONE_PRICE);
 }
 
 function PurchaseAccessories () {
-	TotalAccessoriesCost =+ CalculateTotal(ACCESSORIES_PRICE);
+	TotalAccessoriesCost = CalculateTax(ACCESSORIES_PRICE);
 }
 
-function CalculateTotal(ItemCost) {
+function CalculateTax(ItemCost) {
 TotalCost = ItemCost * TAX_RATE + ItemCost;
 return TotalCost;
 }
